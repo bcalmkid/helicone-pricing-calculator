@@ -10,7 +10,8 @@ import {
   Box,
 } from "@chakra-ui/react";
 
-const PRICING_TIERS = [
+// Define pricing tiers and user price
+const PRICING_TIERS: Array<{ lower: number; upper: number; rate: number }> = [
   { lower: 0, upper: 10000, rate: 0 },
   { lower: 10000, upper: 2000000, rate: 0.0003224 },
   { lower: 2000000, upper: 15000000, rate: 0.0001352 },
@@ -21,16 +22,19 @@ const PRICING_TIERS = [
 
 const USER_PRICE = 20;
 
-const isValidInput = (input) => {
+// Add type annotations for the input parameter (string)
+const isValidInput = (input: string): boolean => {
   return input.trim() === "" || /^\d+$/.test(input.trim());
 };
 
-const parseInput = (input) => {
+// Add type annotations for the input parameter (string)
+const parseInput = (input: string): number => {
   const cleanInput = input.trim();
   return cleanInput === "" ? 0 : parseInt(cleanInput, 10);
 };
 
-const calculateLogCost = (logCount) => {
+// Add type annotations for the logCount parameter (number)
+const calculateLogCost = (logCount: number): number => {
   let remainingLogs = logCount;
   let cost = 0;
 
@@ -45,15 +49,21 @@ const calculateLogCost = (logCount) => {
 };
 
 const PricingCalculator = () => {
-  const [logs, setLogs] = useState("");
-  const [users, setUsers] = useState("");
-  const [costs, setCosts] = useState({ logCost: 0, userCost: 0, totalCost: 0 });
-  const [errors, setErrors] = useState({ logs: "", users: "" });
+  const [logs, setLogs] = useState<string>("");
+  const [users, setUsers] = useState<string>("");
+  const [costs, setCosts] = useState<{ logCost: number; userCost: number; totalCost: number }>({
+    logCost: 0,
+    userCost: 0,
+    totalCost: 0,
+  });
+  const [errors, setErrors] = useState<{ logs: string; users: string }>({ logs: "", users: "" });
 
+  // Check if inputs are valid
   const isValid = useMemo(() => {
     return isValidInput(logs) && isValidInput(users);
   }, [logs, users]);
 
+  // Calculate costs
   const calculateCost = useCallback(() => {
     if (!isValid) return;
 
@@ -67,21 +77,28 @@ const PricingCalculator = () => {
     setCosts({ logCost, userCost, totalCost });
   }, [logs, users, isValid]);
 
-  const handleInputChange = (setter, errorKey) => (event) => {
-    const value = event.target.value;
-    setter(value);
+  // Handle input changes with proper typing for the event
+  const handleInputChange =
+    (
+      setter: React.Dispatch<React.SetStateAction<string>>, 
+      errorKey: "logs" | "users"
+    ) =>
+    (event: React.ChangeEvent<HTMLInputElement>): void => {
+      const value = event.target.value;
+      setter(value);
 
-    if (!isValidInput(value)) {
-      setErrors((prev) => ({
-        ...prev,
-        [errorKey]: "Please enter a valid non-negative integer",
-      }));
-    } else {
-      setErrors((prev) => ({ ...prev, [errorKey]: "" }));
-    }
-  };
+      if (!isValidInput(value)) {
+        setErrors((prev) => ({
+          ...prev,
+          [errorKey]: "Please enter a valid non-negative integer",
+        }));
+      } else {
+        setErrors((prev) => ({ ...prev, [errorKey]: "" }));
+      }
+    };
 
-  const handleKeyPress = (event) => {
+  // Handle key press events
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>): void => {
     if (event.key === "Enter" && isValid) {
       calculateCost();
     }
