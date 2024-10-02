@@ -3,9 +3,14 @@ import ReactDOM from "react-dom/client";
 import { ChakraProvider } from "@chakra-ui/react";
 import PricingCalculator from "./App";
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(
-  <ChakraProvider>
-    <PricingCalculator />
-  </ChakraProvider>,
-);
+const rootElement = document.getElementById("root");
+
+// Add null check or use non-null assertion
+if (rootElement) {
+  const root = ReactDOM.createRoot(rootElement as HTMLElement);
+  root.render(
+    <ChakraProvider>
+      <PricingCalculator />
+    </ChakraProvider>
+  );
+}
