@@ -9,6 +9,7 @@ import {
   Text,
   Box,
   Divider,
+  Flex,
 } from "@chakra-ui/react";
 
 // Pricing Tiers and User Price
@@ -173,16 +174,19 @@ const PricingCalculator = () => {
         </Button>
       </CardBody>
       <CardFooter mt={6}>
-        <Box w="full" textAlign="left">
-          <Text fontSize="lg" fontWeight="semibold" color="gray.700">
+        <Box w="full">
+          <Text fontSize="lg" fontWeight="semibold" color="gray.700" textAlign="left">
             Log Cost: ${costs.logCost.toFixed(2)}
           </Text>
-          <Text fontSize="lg" fontWeight="semibold" color="gray.700">
+          <Text fontSize="lg" fontWeight="semibold" color="gray.700" textAlign="left">
             User Cost: ${costs.userCost.toFixed(2)}
           </Text>
-          {/* Add a short divider that matches the length of the Total Cost */}
-          <Divider my={4} w="fit-content" mx="auto" />
-          <Text fontSize="xl" fontWeight="bold" color="teal.600">
+          
+          {/* This flex ensures the divider aligns with the Total Monthly Cost */}
+          <Flex justifyContent="right" my={4}>
+            <Divider w="auto" maxW="fit-content" />
+          </Flex>
+          <Text fontSize="xl" fontWeight="bold" color="teal.600" textAlign="right">
             Total Monthly Cost: ${costs.totalCost.toFixed(2)}
           </Text>
         </Box>
