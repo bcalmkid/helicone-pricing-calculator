@@ -8,10 +8,11 @@ import {
   CardFooter,
   Text,
   Box,
+  Divider,
 } from "@chakra-ui/react";
 
-// Define pricing tiers and user price
-const PRICING_TIERS: Array<{ lower: number; upper: number; rate: number }> = [
+// Pricing Tiers and User Price
+const PRICING_TIERS = [
   { lower: 0, upper: 10000, rate: 0 },
   { lower: 10000, upper: 2000000, rate: 0.0003224 },
   { lower: 2000000, upper: 15000000, rate: 0.0001352 },
@@ -22,18 +23,18 @@ const PRICING_TIERS: Array<{ lower: number; upper: number; rate: number }> = [
 
 const USER_PRICE = 20;
 
-// Add type annotations for the input parameter (string)
+// Input validation function
 const isValidInput = (input: string): boolean => {
   return input.trim() === "" || /^\d+$/.test(input.trim());
 };
 
-// Add type annotations for the input parameter (string)
+// Input parsing function
 const parseInput = (input: string): number => {
   const cleanInput = input.trim();
   return cleanInput === "" ? 0 : parseInt(cleanInput, 10);
 };
 
-// Add type annotations for the logCount parameter (number)
+// Log cost calculation
 const calculateLogCost = (logCount: number): number => {
   let remainingLogs = logCount;
   let cost = 0;
@@ -58,12 +59,10 @@ const PricingCalculator = () => {
   });
   const [errors, setErrors] = useState<{ logs: string; users: string }>({ logs: "", users: "" });
 
-  // Check if inputs are valid
   const isValid = useMemo(() => {
     return isValidInput(logs) && isValidInput(users);
   }, [logs, users]);
 
-  // Calculate costs
   const calculateCost = useCallback(() => {
     if (!isValid) return;
 
@@ -77,7 +76,6 @@ const PricingCalculator = () => {
     setCosts({ logCost, userCost, totalCost });
   }, [logs, users, isValid]);
 
-  // Handle input changes with proper typing for the event
   const handleInputChange =
     (
       setter: React.Dispatch<React.SetStateAction<string>>, 
@@ -97,7 +95,6 @@ const PricingCalculator = () => {
       }
     };
 
-  // Handle key press events
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>): void => {
     if (event.key === "Enter" && isValid) {
       calculateCost();
@@ -115,11 +112,11 @@ const PricingCalculator = () => {
     >
       <CardHeader mb={6}>
         <Text fontSize="2xl" fontWeight="bold" color="gray.700">
-          Pricing Calculator
+          Pricing Calculator (Monthly)
         </Text>
       </CardHeader>
       <CardBody>
-        <Box mb={4}>
+        <Box mb={6}>
           <Text fontSize="sm" fontWeight="medium" mb={2} color="gray.600">
             Number of Logs
           </Text>
@@ -140,7 +137,7 @@ const PricingCalculator = () => {
             </Text>
           )}
         </Box>
-        <Box mb={4}>
+        <Box mb={6}>
           <Text fontSize="sm" fontWeight="medium" mb={2} color="gray.600">
             Number of Users
           </Text>
@@ -161,28 +158,32 @@ const PricingCalculator = () => {
             </Text>
           )}
         </Box>
+
         <Button
           onClick={calculateCost}
           w="full"
           mt={4}
           size="lg"
+          borderRadius="md"
           colorScheme="teal"
           disabled={!isValid}
           _hover={{ bg: "teal.500" }}
         >
-          Calculate Cost
+          Calculate Monthly Cost
         </Button>
       </CardBody>
       <CardFooter mt={6}>
-        <Box textAlign="center">
+        <Box w="full" textAlign="left">
           <Text fontSize="lg" fontWeight="semibold" color="gray.700">
             Log Cost: ${costs.logCost.toFixed(2)}
           </Text>
           <Text fontSize="lg" fontWeight="semibold" color="gray.700">
             User Cost: ${costs.userCost.toFixed(2)}
           </Text>
-          <Text fontSize="xl" fontWeight="bold" mt={2} color="teal.600">
-            Total Cost: ${costs.totalCost.toFixed(2)}
+          {/* Add a short divider that matches the length of the Total Cost */}
+          <Divider my={4} w="fit-content" mx="auto" />
+          <Text fontSize="xl" fontWeight="bold" color="teal.600">
+            Total Monthly Cost: ${costs.totalCost.toFixed(2)}
           </Text>
         </Box>
       </CardFooter>
